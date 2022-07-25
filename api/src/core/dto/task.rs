@@ -8,7 +8,7 @@ pub struct NewTaskDto {
 }
 
 impl NewTaskDto {
-    pub fn toInsertable(&self) -> TaskEntityInsertable {
+    pub fn to_insertable(&self) -> TaskEntityInsertable {
         TaskEntityInsertable {
             title: self.title.clone(),
         }

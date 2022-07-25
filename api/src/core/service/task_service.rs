@@ -11,7 +11,7 @@ pub fn create_task(task_request: NewTaskDto) -> Result<TaskEntity, TaskApiError>
     let connection = establish_connection();
     let task_repository = TaskRepository { connection };
 
-    let task_insertable = task_request.toInsertable();
+    let task_insertable = task_request.to_insertable();
     let res = task_repository.create(task_insertable);
 
     return match res {
