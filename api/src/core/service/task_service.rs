@@ -19,3 +19,23 @@ pub fn create_task(task_request: NewTaskDto) -> Result<TaskEntity, TaskApiError>
         Err(_) => Err(TaskApiError::DBError),
     };
 }
+
+pub fn delete_task(task_id: i32) -> Result<usize, TaskApiError> {
+    let connection = establish_connection();
+    let task_repository = TaskRepository { connection };
+
+    let res = task_repository.remove(task_id);
+
+    return match res {
+        Ok(data) => {
+            let result = if data == 0 {
+                Err(TaskApiError::NotFound)
+            } else {
+                Ok(data)
+            };
+
+            result
+        }
+        Err(_) => Err(TaskApiError::DBError),
+    };
+}
