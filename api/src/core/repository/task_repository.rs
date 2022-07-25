@@ -20,4 +20,8 @@ impl TaskRepository {
     pub fn remove(&self, task_id: i32) -> Result<usize, diesel::result::Error> {
         diesel::delete(tasks::table.find(task_id)).execute(&self.connection)
     }
+
+    pub fn get_all(&self) -> Result<Vec<TaskEntity>, diesel::result::Error> {
+        tasks::dsl::tasks.load(&self.connection)
+    }
 }
