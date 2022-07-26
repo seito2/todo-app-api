@@ -13,7 +13,8 @@ services:
       - ./api:/app
       - cargo-cache:/usr/local/cargo/registry
       - target-cache:/app/target
-    command: /bin/sh -c "diesel migration run && cargo watch -x run"
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+    command: /bin/sh -c "./wait-for-it.sh db:5432 -- diesel migration run && cargo watch -x run"
 
   db:
     image: "postgres:9"
