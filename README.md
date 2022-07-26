@@ -1,5 +1,9 @@
 # Get started
 
+```bash
+brew install postgres
+```
+
 ## For Podman user
 ```bash
 ./run_db.sh # run db
