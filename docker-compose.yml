@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./docker/rust.Dockerfile
     ports:
-      - "8080:8080"
+      - "8000:8000"
     depends_on:
       - todo-app-apidb1-pod
     volumes:
@@ -26,6 +26,16 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: app
       PGDATA: /var/lib/postgresql/data/pgdata
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: "swagger-ui"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api/openapi.yaml:/openapi.yaml
+    environment:
+      SWAGGER_JSON: /openapi.yaml
 
 volumes:
   cargo-cache:

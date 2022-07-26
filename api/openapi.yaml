@@ -1,0 +1,113 @@
+swagger: "2.0"
+info:
+  description: "Todo app"
+  version: "1.0.0"
+  title: "Swagger Petstore"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "petstore.swagger.io"
+basePath: "/v2"
+tags:
+- name: "task"
+  description: "Access to Petstore orders"
+schemes:
+- "https"
+- "http"
+paths:
+  /api/task/:
+    get:
+      tags:
+      - "task"
+      summary: "Get all tasks"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Task"
+        "406":
+          description: "Database Error"
+          schema: 
+            $ref: "#/definitions/ApiResponse"
+    post:
+      tags:
+      - "task"
+      summary: "Create new task"
+      produces:
+      - "application/json"
+      body:
+      - name: "body"
+        in: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+              example: "task title"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Task"
+        "406":
+          description: "Database Error"
+          schema: 
+            $ref: "#/definitions/ApiResponse"
+  /api/task/{task_id}:
+    delete:
+      tags:
+      - "task"
+      summary: "delete task"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "task_id"
+        in: "path"
+        description: "task id"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Return deleted task id"
+          schema:
+            type: "number"
+        "404":
+          description: "Task not found."
+          schema: 
+            $ref: "#/definitions/ApiResponse"
+        "406":
+          description: "Database Error"
+          schema: 
+            $ref: "#/definitions/ApiResponse"
+definitions:
+  Task:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      title:
+        type: "string"
+  ApiResponse:
+    type: "object"
+    properties:
+      errcode:
+        type: "integer"
+        format: "int32"
+      success:
+        type: "boolean"
+        default: false
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

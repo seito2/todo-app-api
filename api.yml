@@ -11,32 +11,41 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
+    io.kubernetes.cri-o.TTY/swagger-ui: "false"
     io.kubernetes.cri-o.TTY/todo-app-apiapi1: "false"
-    io.kubernetes.cri-o.TTY/todo-app-apidb1: "false"
+    io.kubernetes.cri-o.TTY/todo-app-apitodo-app-apidb1-pod1: "false"
+    io.podman.annotations.autoremove/swagger-ui: "FALSE"
     io.podman.annotations.autoremove/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.autoremove/todo-app-apidb1: "FALSE"
+    io.podman.annotations.autoremove/todo-app-apitodo-app-apidb1-pod1: "FALSE"
+    io.podman.annotations.init/swagger-ui: "FALSE"
     io.podman.annotations.init/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.init/todo-app-apidb1: "FALSE"
+    io.podman.annotations.init/todo-app-apitodo-app-apidb1-pod1: "FALSE"
+    io.podman.annotations.privileged/swagger-ui: "FALSE"
     io.podman.annotations.privileged/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.privileged/todo-app-apidb1: "FALSE"
+    io.podman.annotations.privileged/todo-app-apitodo-app-apidb1-pod1: "FALSE"
+    io.podman.annotations.publish-all/swagger-ui: "FALSE"
     io.podman.annotations.publish-all/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.publish-all/todo-app-apidb1: "FALSE"
+    io.podman.annotations.publish-all/todo-app-apitodo-app-apidb1-pod1: "FALSE"
     org.opencontainers.image.base.digest/todo-app-apiapi1: sha256:a06eaf1b747ba5db1a15aba7a2ced8f7159d22eb210a79820f19a038
     org.opencontainers.image.base.name/todo-app-apiapi1: docker.io/library/rust:1.60
-  creationTimestamp: "2022-07-26T08:39:55Z"
+  creationTimestamp: "2022-07-26T09:17:40Z"
   labels:
     app: todo-app-apidb1-pod
   name: todo-app-apidb1-pod
 spec:
   ports:
   - name: "5432"
-    nodePort: 30056
+    nodePort: 31481
     port: 5432
     targetPort: 5432
   - name: "8080"
-    nodePort: 31277
+    nodePort: 31642
     port: 8080
     targetPort: 8080
+  - name: "8000"
+    nodePort: 30721
+    port: 8000
+    targetPort: 8000
   selector:
     app: todo-app-apidb1-pod
   type: NodePort
@@ -45,19 +54,24 @@ apiVersion: v1
 kind: Pod
 metadata:
   annotations:
+    io.kubernetes.cri-o.TTY/swagger-ui: "false"
     io.kubernetes.cri-o.TTY/todo-app-apiapi1: "false"
-    io.kubernetes.cri-o.TTY/todo-app-apidb1: "false"
+    io.kubernetes.cri-o.TTY/todo-app-apitodo-app-apidb1-pod1: "false"
+    io.podman.annotations.autoremove/swagger-ui: "FALSE"
     io.podman.annotations.autoremove/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.autoremove/todo-app-apidb1: "FALSE"
+    io.podman.annotations.autoremove/todo-app-apitodo-app-apidb1-pod1: "FALSE"
+    io.podman.annotations.init/swagger-ui: "FALSE"
     io.podman.annotations.init/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.init/todo-app-apidb1: "FALSE"
+    io.podman.annotations.init/todo-app-apitodo-app-apidb1-pod1: "FALSE"
+    io.podman.annotations.privileged/swagger-ui: "FALSE"
     io.podman.annotations.privileged/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.privileged/todo-app-apidb1: "FALSE"
+    io.podman.annotations.privileged/todo-app-apitodo-app-apidb1-pod1: "FALSE"
+    io.podman.annotations.publish-all/swagger-ui: "FALSE"
     io.podman.annotations.publish-all/todo-app-apiapi1: "FALSE"
-    io.podman.annotations.publish-all/todo-app-apidb1: "FALSE"
+    io.podman.annotations.publish-all/todo-app-apitodo-app-apidb1-pod1: "FALSE"
     org.opencontainers.image.base.digest/todo-app-apiapi1: sha256:a06eaf1b747ba5db1a15aba7a2ced8f7159d22eb210a79820f19a038
     org.opencontainers.image.base.name/todo-app-apiapi1: docker.io/library/rust:1.60
-  creationTimestamp: "2022-07-26T08:39:55Z"
+  creationTimestamp: "2022-07-26T09:17:40Z"
   labels:
     app: todo-app-apidb1-pod
   name: todo-app-apidb1-pod
@@ -68,14 +82,14 @@ spec:
     env:
     - name: POSTGRES_DB
       value: app
+    - name: POSTGRES_USER
+      value: admin
     - name: PGDATA
       value: /var/lib/postgresql/data/pgdata
     - name: POSTGRES_PASSWORD
       value: admin
-    - name: POSTGRES_USER
-      value: admin
     image: docker.io/library/postgres:9
-    name: todo-app-apidb1
+    name: todo-app-apitodo-app-apidb1-pod1
     ports:
     - containerPort: 5432
       hostPort: 5432
@@ -87,15 +101,18 @@ spec:
         - CAP_AUDIT_WRITE
     volumeMounts:
     - mountPath: /var/lib/postgresql/data
-      name: 3210f73288bc33eaf430268b2c53b82e5a7f958341831b578181ebb0c74ea6c9-pvc
+      name: e81f5a1c3d9626cde94eb526f589d32888f35aba6e2263f25ec7c251c89bae0e-pvc
     - mountPath: /var/lib/postgresql/data/pgdata
       name: todo-app-api_pgdata-pvc
-  - command:
-    - /bin/sh
-    - -c
-    - ./wait-for-it.sh db:5432 -- diesel migration run && cargo watch -x run
-    image: localhost/todo-app-api_api:latest
-    name: todo-app-apiapi1
+  - args:
+    - nginx
+    - -g
+    - daemon off;
+    env:
+    - name: SWAGGER_JSON
+      value: /openapi.yaml
+    image: docker.io/swaggerapi/swagger-ui:latest
+    name: swagger-ui
     ports:
     - containerPort: 8080
       hostPort: 8080
@@ -106,28 +123,50 @@ spec:
         - CAP_NET_RAW
         - CAP_AUDIT_WRITE
     volumeMounts:
+    - mountPath: /openapi.yaml
+      name: todo-app-api-api-openapi.yaml-host-0
+  - command:
+    - /bin/sh
+    - -c
+    - ./wait-for-it.sh todo-app-apidb1-pod:5432 -- diesel migration run && cargo watch -x run
+    image: localhost/todo-app-api_api:latest
+    name: todo-app-apiapi1
+    ports:
+    - containerPort: 8000
+      hostPort: 8000
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_NET_RAW
+        - CAP_AUDIT_WRITE
+    volumeMounts:
     - mountPath: /app
       name: todo-app-api-api-host-0
     - mountPath: /usr/local/cargo
-      name: 14eb6169b5872c29f389b4ba346077432ffb6e99c1dc38a65bf4d095b8c4630c-pvc
+      name: 22516ae3e858053ef850342a95d01abdd0b8d7b071fae4a3023c109a360429c6-pvc
     - mountPath: /usr/local/cargo/registry
       name: todo-app-api_cargo-cache-pvc
     - mountPath: /app/target
       name: todo-app-api_target-cache-pvc
   volumes:
-  - name: 3210f73288bc33eaf430268b2c53b82e5a7f958341831b578181ebb0c74ea6c9-pvc
+  - name: e81f5a1c3d9626cde94eb526f589d32888f35aba6e2263f25ec7c251c89bae0e-pvc
     persistentVolumeClaim:
-      claimName: 3210f73288bc33eaf430268b2c53b82e5a7f958341831b578181ebb0c74ea6c9
+      claimName: e81f5a1c3d9626cde94eb526f589d32888f35aba6e2263f25ec7c251c89bae0e
   - name: todo-app-api_pgdata-pvc
     persistentVolumeClaim:
       claimName: todo-app-api_pgdata
   - hostPath:
+      path: /Users/seito.a.hirai/Documents/tdd/other/todo-app-api/api/openapi.yaml
+      type: Directory
+    name: todo-app-api-api-openapi.yaml-host-0
+  - hostPath:
       path: /Users/seito.a.hirai/Documents/tdd/other/todo-app-api/api
       type: Directory
     name: todo-app-api-api-host-0
-  - name: 14eb6169b5872c29f389b4ba346077432ffb6e99c1dc38a65bf4d095b8c4630c-pvc
+  - name: 22516ae3e858053ef850342a95d01abdd0b8d7b071fae4a3023c109a360429c6-pvc
     persistentVolumeClaim:
-      claimName: 14eb6169b5872c29f389b4ba346077432ffb6e99c1dc38a65bf4d095b8c4630c
+      claimName: 22516ae3e858053ef850342a95d01abdd0b8d7b071fae4a3023c109a360429c6
   - name: todo-app-api_cargo-cache-pvc
     persistentVolumeClaim:
       claimName: todo-app-api_cargo-cache
