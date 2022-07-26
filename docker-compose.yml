@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/rust.Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./api:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    command: /bin/sh -c "diesel migration run && cargo watch -x run"
+
+  db:
+    image: "postgres:9"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: app
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+volumes:
+  cargo-cache:
+  target-cache:
+  pgdata: {}

@@ -1,4 +1,5 @@
 use actix_web::Result;
+use log::error;
 
 use crate::core::{
     dto::task::NewTaskDto,
@@ -16,7 +17,10 @@ pub fn create_task(task_request: NewTaskDto) -> Result<TaskEntity, TaskApiError>
 
     match res {
         Ok(data) => Ok(data),
-        Err(_) => Err(TaskApiError::DBError),
+        Err(e) => {
+            error!("{}", e);
+            Err(TaskApiError::DBError)
+        }
     }
 }
 
