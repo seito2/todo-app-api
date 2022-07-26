@@ -8,14 +8,14 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - todo-app-apidb1-pod
     volumes:
       - ./api:/app
       - cargo-cache:/usr/local/cargo/registry
       - target-cache:/app/target
-    command: /bin/sh -c "./wait-for-it.sh db:5432 -- diesel migration run && cargo watch -x run"
+    command: /bin/sh -c "./wait-for-it.sh todo-app-apidb1-pod:5432 -- diesel migration run && cargo watch -x run"
 
-  db:
+  todo-app-apidb1-pod:
     image: "postgres:9"
     ports:
       - "5432:5432"

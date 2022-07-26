@@ -1,18 +1,19 @@
 # Get started
 
-```bash
-brew install postgres
-```
-
 ## For Podman user
 ```bash
-./run_db.sh # run db
-./api_binary # run api
+# Start Dev
+make up
+
+# Stop dev
+make down
 ```
 
 ## For Docker user
 ```bash
-./run_db_docker.sh
+# Start Dev
+docker compose up -d
 
-./api_binary # run api
+# Stop Dev
+docker compose down
 ```
