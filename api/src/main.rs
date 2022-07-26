@@ -1,4 +1,6 @@
-use actix_web::{get, App, HttpServer};
+use actix_cors::Cors;
+use actix_web::middleware::Logger;
+use actix_web::{get, http, App, HttpServer};
 
 #[macro_use]
 extern crate diesel;
@@ -20,7 +22,14 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
-        App::new().service(
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:3000")
+            .allowed_methods(vec!["GET", "POST", "DELETE"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
+
+        App::new().wrap(Logger::default()).wrap(cors).service(
             actix_web::web::scope("/api")
                 .service(core::controller::task_controller::get_controller())
                 .service(health),
