@@ -4,6 +4,7 @@ podman run --rm -d \
     -e POSTGRES_HOST_AUTH_METHOD=trust \
     -e POSTGRES_PASSWORD=password \
     -e POSTGRES_USER=admin \
+    -e POSTGRES_DB=app \
     -e POSTGRES_PASSWORD=admin \
     -v $(pwd)/init.d:/docker-entrypoint-initdb.d \
     postgres:12-alpine
