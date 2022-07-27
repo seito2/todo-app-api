@@ -13,7 +13,7 @@ host: "petstore.swagger.io"
 basePath: "/v2"
 tags:
 - name: "task"
-  description: "Access to Petstore orders"
+  description: "Api endpoints related with task"
 schemes:
 - "https"
 - "http"
