@@ -4,7 +4,7 @@ use crate::core::{
     dto::task::NewTaskDto, modules::errors::task_error::TaskApiError, service::task_service,
 };
 
-#[post("/create")]
+#[post("/")]
 async fn create(
     new_task_dto: web::Json<NewTaskDto>,
 ) -> actix_web::Result<HttpResponse, TaskApiError> {

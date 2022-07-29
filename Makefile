@@ -1,3 +1,6 @@
+build:
+	podman build -t todo-app-api_api -f ./docker/rust.Dockerfile .
+
 up:
 	podman play kube api.yml
 
